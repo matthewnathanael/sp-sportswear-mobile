@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sp_sportswear_mobile/menu.dart';
+import 'package:sp_sportswear_mobile/screen/menu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,8 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
             .copyWith(secondary: Colors.blueAccent[400]),
       ),
-      home: MyHomePage( colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
-          .copyWith(secondary: Colors.blueAccent[400]),),
+      home: MyHomePage(),
     );
   }
 }

@@ -1,3 +1,5 @@
+// File: lib/widgets/product_entry_card.dart
+
 import 'package:flutter/material.dart';
 import 'package:sp_sportswear_mobile/models/product_entry.dart';
 
@@ -13,121 +15,220 @@ class ProductEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // --- Definisi Warna Lokal (Agar tidak bergantung pada main.dart) ---
+    const Color stone700 = Color(0xFF44403C); // Warna Utama (Gelap)
+    const Color stone500 = Color(0xFF78716C); // Warna Teks Sekunder (Abu-abu)
+    const Color amber500 = Color(0xFFF59E0B); // Warna Aksen (Kuning/Oranye)
+    const Color amber100 = Color(0xFFFEF3C7); // Background Badge
+    const Color surfaceWhite = Colors.white;  // Background Kartu
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: InkWell(
-        onTap: onTap,
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            side: BorderSide(color: Colors.grey.shade300),
+      decoration: BoxDecoration(
+        color: surfaceWhite,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: const Offset(0, 3), // Bayangan lembut ke bawah
           ),
-          elevation: 2,
-          clipBehavior: Clip.antiAlias, // Menambahkan clip agar gambar tidak tumpah
+        ],
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Thumbnail
-              if (product.thumbnail.isNotEmpty)
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(8.0)),
-                  child: Image.network(
-                    // Anda bisa tetap menggunakan proxy jika diperlukan
-                    'http://localhost:8000/proxy-image/?url=${Uri.encodeComponent(product.thumbnail)}',
-                    height: 180, // Sedikit lebih tinggi
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
+              // --- Bagian Header: Gambar & Badge ---
+              Stack(
+                children: [
+                  // Thumbnail Gambar
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    child: product.thumbnail.isNotEmpty
+                        ? Image.network(
+                      'http://localhost:8000/proxy-image/?url=${Uri.encodeComponent(product.thumbnail)}',
                       height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        height: 180,
+                        color: Colors.grey[300],
+                        child: const Center(
+                          child: Icon(Icons.broken_image, size: 40, color: Colors.white),
+                        ),
+                      ),
+                    )
+                        : Container(
+                      height: 180,
+                      width: double.infinity,
                       color: Colors.grey[300],
                       child: const Center(
-                          child: Icon(Icons.broken_image,
-                              color: Colors.white, size: 50)),
+                        child: Icon(Icons.image, size: 40, color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
 
-              // Konten Teks di dalam Padding
+                  // Badge Kategori (Kiri Atas)
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: amber100,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.amber.shade200),
+                      ),
+                      child: Text(
+                        product.category.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF78350F), // Amber-900 text
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Badge Featured (Kanan Atas)
+                  if (product.isFeatured)
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: amber500,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.orange.withOpacity(0.4),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Featured',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+
+              // --- Bagian Konten Teks ---
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title (Menggunakan product.name)
-                    Text(
-                      product.name, //
-                      style: const TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    // Baris 1: Nama Produk & Harga
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            product.name,
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: stone700, // Stone Color
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Rp ${product.price}',
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w800, // Extra Bold
+                            color: stone700,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 6),
 
-                    // Harga (BARU)
-                    Text(
-                      'Rp ${product.price}', // Menampilkan harga
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w600,
-                        color: Theme.of(context).primaryColor,
+                    const SizedBox(height: 4),
+
+                    // Baris 2: Brand (Jika ada)
+                    if (product.brand.isNotEmpty)
+                      Text(
+                        product.brand,
+                        style: const TextStyle(
+                          fontSize: 12.0,
+                          fontStyle: FontStyle.italic,
+                          color: stone500,
+                        ),
                       ),
-                    ),
+
                     const SizedBox(height: 8),
 
-                    // Brand
-                    Text(
-                      'Brand: ${product.brand}', // Menampilkan brand
-                      style: const TextStyle(
-                          fontSize: 14.0, fontStyle: FontStyle.italic),
-                    ),
-                    const SizedBox(height: 6),
-
-                    // Kategori
-                    Text('Kategori: ${product.category}'),
-                    const SizedBox(height: 10),
-
-                    // Deskripsi (Menggunakan product.description)
+                    // Baris 3: Deskripsi Singkat
                     Text(
                       product.description,
-                      maxLines: 3, // Izinkan 3 baris
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.black54),
+                      style: const TextStyle(
+                        fontSize: 14.0,
+                        color: stone500,
+                        height: 1.4,
+                      ),
                     ),
+
+                    const SizedBox(height: 16),
+                    const Divider(height: 1, color: Color(0xFFE7E5E4)), // Garis tipis
                     const SizedBox(height: 12),
 
-                    // Baris untuk info tambahan (Stock, Rating, Featured)
+                    // Baris 4: Info Footer (Rating & Stock)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Stock
-                        Text(
-                          'Stok: ${product.stock}', // BARU: Menampilkan stok
-                          style: const TextStyle(color: Colors.black87),
-                        ),
-
                         // Rating
                         Row(
                           children: [
-                            const Icon(Icons.star, color: Colors.amber, size: 18),
+                            const Icon(Icons.star_rounded, color: amber500, size: 20),
                             const SizedBox(width: 4),
                             Text(
-                              '${product.rating}', // Menampilkan rating
-                              style:
-                              const TextStyle(fontWeight: FontWeight.bold),
+                              product.rating != null ? '${product.rating}' : 'N/A',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: stone700,
+                              ),
                             ),
                           ],
                         ),
 
-                        // Featured indicator (desain diubah sedikit)
-                        if (product.isFeatured)
-                          Chip(
-                            label: const Text('Unggulan', style: TextStyle(fontSize: 12)),
-                            backgroundColor: Colors.amber[100],
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                            visualDensity: VisualDensity.compact,
-                          ),
+                        // Stock
+                        Row(
+                          children: [
+                            Icon(Icons.inventory_2_outlined, size: 16, color: stone500),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Stok: ${product.stock}',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: stone500,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ],

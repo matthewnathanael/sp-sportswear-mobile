@@ -3,25 +3,31 @@
 import 'package:flutter/material.dart';
 import 'package:sp_sportswear_mobile/screens/menu.dart';
 import 'package:sp_sportswear_mobile/screens/product_form.dart';
-// BARU: Import halaman daftar produk
 import 'package:sp_sportswear_mobile/screens/product_entry_list.dart';
+import 'package:sp_sportswear_mobile/screens/login.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Ambil request dari provider
+    final request = context.watch<CookieRequest>();
+
     return Drawer(
+      backgroundColor: const Color(0xFFFFFBEB), // Amber-50
       child: ListView(
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue, // Anda bisa ganti warnanya jika mau
+              color: Color(0xFF44403C), // Stone-700 (Sesuai Navbar Web)
             ),
             child: Column(
               children: [
                 Text(
-                  'SP Sportswear', // Judul
+                  'SP Sportswear',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 30,
@@ -31,11 +37,11 @@ class LeftDrawer extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(10)),
                 Text(
-                  "Toko sportswear terlengkap!", // Deskripsi
+                  "Toko sportswear terlengkap!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.white,
+                    color: Color(0xFFFDE68A), // Amber-200 (Aksen teks)
                     fontWeight: FontWeight.normal,
                   ),
                 ),
@@ -44,8 +50,7 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.home_outlined),
-            title: const Text('Halaman Utama'), //
-            // Bagian redirection ke MyHomePage
+            title: const Text('Halaman Utama'),
             onTap: () {
               Navigator.pushReplacement(
                   context,
@@ -58,8 +63,7 @@ class LeftDrawer extends StatelessWidget {
             leading: const Icon(Icons.view_list),
             title: const Text('Daftar Produk'),
             onTap: () {
-              // Route ke halaman daftar produk
-              Navigator.pushReplacement( // Diganti menjadi pushReplacement
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const ProductListPage(filterType: "all"),
@@ -68,9 +72,8 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add_shopping_cart), // Ikon
-            title: const Text('Tambah Produk'), // Teks
-            // Bagian redirection ke ProductFormPage
+            leading: const Icon(Icons.add_shopping_cart),
+            title: const Text('Tambah Produk'),
             onTap: () {
               Navigator.push(
                 context,
@@ -78,6 +81,33 @@ class LeftDrawer extends StatelessWidget {
                   builder: (context) => const ProductFormPage(),
                 ),
               );
+            },
+          ),
+          // TOMBOL LOGOUT
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
+            onTap: () async {
+              // URL Logout Django
+              final response = await request.logout(
+                  "http://localhost:8000/auth/logout/");
+              String message = response["message"];
+              if (context.mounted) {
+                if (response['status']) {
+                  String uname = response["username"];
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("$message Sampai jumpa, $uname."),
+                  ));
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(message),
+                  ));
+                }
+              }
             },
           ),
         ],

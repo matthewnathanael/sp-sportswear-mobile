@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sp_sportswear_mobile/models/product_entry.dart'; //  Menggunakan model ProductEntry
+import 'package:sp_sportswear_mobile/models/product_entry.dart';
 import 'package:sp_sportswear_mobile/widgets/left_drawer.dart';
 import 'package:sp_sportswear_mobile/screens/product_detail.dart';
-import 'package:sp_sportswear_mobile/widgets/product_entry_card.dart'; // Menggunakan widget ProductEntryCard
+import 'package:sp_sportswear_mobile/widgets/product_entry_card.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 
@@ -11,29 +11,30 @@ class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key, required this.filterType});
 
   @override
-  State<ProductListPage> createState() => _ProductListPageState(); //
+  State<ProductListPage> createState() => _ProductListPageState();
 }
 
-class _ProductListPageState extends State<ProductListPage> { //
+class _ProductListPageState extends State<ProductListPage> {
 
-  // Nama fungsi dan tipe data yang di-return
+  // Definisi Warna Tema Lokal
+  final Color primaryColor = const Color(0xFF44403C); // Stone-700
+  final Color backgroundColor = const Color(0xFFFFFBEB); // Amber-50
+  final Color textDark = const Color(0xFF1C1917); // Stone-900
+
   Future<List<ProductEntry>> fetchProducts(CookieRequest request) async {
-    // TODO: Ganti URL dengan URL aplikasi! Pastikan ada trailing slash (/)
-    // Untuk emulator Android: http://10.0.2.2:8000
-    // Untuk browser: http://localhost:8000
+    // Ganti URL sesuai environment (Emulator: 10.0.2.2, Web: localhost)
     String url = 'http://localhost:8000/json/';
     if (widget.filterType == "my") {
       url = 'http://localhost:8000/json/?filter=my';
     }
-    // Decode response ke format json
+
     final response = await request.get(url);
     var data = response;
 
-    // Konversi data json ke objek ProductEntry
-    List<ProductEntry> listProducts = []; // Nama list
+    List<ProductEntry> listProducts = [];
     for (var d in data) {
       if (d != null) {
-        listProducts.add(ProductEntry.fromJson(d)); // Menggunakan ProductEntry.fromJson
+        listProducts.add(ProductEntry.fromJson(d));
       }
     }
     return listProducts;
@@ -42,45 +43,63 @@ class _ProductListPageState extends State<ProductListPage> { //
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+
     return Scaffold(
+      backgroundColor: backgroundColor, // Set background Amber-50
       appBar: AppBar(
-        title: Text(widget.filterType == "my" ? 'My Products' : 'All Products'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text(
+          widget.filterType == "my" ? 'Produk Saya' : 'Daftar Produk',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: primaryColor, // Set AppBar Stone-700
         foregroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(
-        future: fetchProducts(request), //  Memanggil fetchProducts
+        future: fetchProducts(request),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.data == null) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                ));
           } else {
-            if (!snapshot.hasData || snapshot.data!.isEmpty) { // Ditambahkan cek .isEmpty
-              return Center( // cost dihilangin biar bisa either 2 choices itu (my) ato (all)
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Icon(
+                        Icons.inventory_2_outlined,
+                        size: 80,
+                        color: Colors.grey[400]
+                    ),
+                    const SizedBox(height: 16),
                     Text(
                       widget.filterType == "my"
                           ? 'Anda belum memiliki produk.'
-                          : 'Belum ada produk.',
-                      style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
+                          : 'Belum ada produk tersedia.',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: textDark.withOpacity(0.6),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    SizedBox(height: 8),
                   ],
                 ),
               );
             } else {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
-                itemBuilder: (_, index) => ProductEntryCard( // ProductEntryCard
-                  product: snapshot.data![index], // Menggunakan parameter 'product'
+                itemBuilder: (_, index) => ProductEntryCard(
+                  product: snapshot.data![index],
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProductDetailPage ( //  ProductDetailPage
-                          product: snapshot.data![index], // DIUBAH: dari news ke product
+                        builder: (context) => ProductDetailPage(
+                          product: snapshot.data![index],
                         ),
                       ),
                     );

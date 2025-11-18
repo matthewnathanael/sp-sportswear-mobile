@@ -126,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                         String password = _passwordController.text;
 
                         // Ganti localhost dengan 10.0.2.2 jika menggunakan Emulator Android
-                        const String url = "http://matthew-nathanael-spsportswear.pbp.cs.ui.ac.id/auth/login/";
+                        const String url = "https://matthew-nathanael-spsportswear.pbp.cs.ui.ac.id/auth/login/";
 
                         final response = await request.post(url, {
                           'username': username,

@@ -90,7 +90,7 @@ class LeftDrawer extends StatelessWidget {
             onTap: () async {
               // URL Logout Django
               final response = await request.logout(
-                  "http://matthew-nathanael-spsportswear.pbp.cs.ui.ac.id/auth/logout/");
+                  "https://matthew-nathanael-spsportswear.pbp.cs.ui.ac.id/auth/logout/");
               String message = response["message"];
               if (context.mounted) {
                 if (response['status']) {

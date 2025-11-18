@@ -185,3 +185,4 @@ Saya mengimplementasikan tombol Save, menggunakan request.postJson. Karena Cooki
 - Saya melakukan testing pada lib/screens/product_detail.dart dan sadar saya belum menampilkan semua atribut. Saya menambahkan userId dan userUsername.
 Ini mengungkap bug yang terjadi yaitu, Penjual: Tidak diketahui. Saya sadar show_json di main/views.py tidak mengirim user_username. Saya memperbaikinya.
 Setelah show_json bisa mengakses request.user (karena saya menambahkan @login_required), saya sadar saya bisa dengan mudah menambahkan filter My Products dengan menambahkan if request.GET.get('filter') == 'my'. Saya kemudian memperbarui lib/screens/product_entry_list.dart untuk menerima filterType dan mengubah URL panggilannya, yang akhirnya menyelesaikan fungsionalitas filter.
+- Mengubah desain dan disesuaikan dengan apa yang sudah dibuat sebelumnya pada web dengan menggunakan django. Namun, disini mengubah desainnya dengan fitur-fitur yang sudah ada pada flutter.

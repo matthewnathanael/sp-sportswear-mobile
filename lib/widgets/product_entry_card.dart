@@ -46,7 +46,7 @@ class ProductEntryCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- Bagian Header: Gambar & Badge ---
+              // Bagian Header
               Stack(
                 children: [
                   // Thumbnail Gambar

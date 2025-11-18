@@ -43,7 +43,7 @@ class MyHomePage extends StatelessWidget {
             tooltip: 'Logout',
             onPressed: () async {
               final response = await request.logout(
-                  "http://localhost:8000/auth/logout/");
+                  "http://matthew-nathanael-spsportswear.pbp.cs.ui.ac.id/auth/logout/");
               String message = response["message"];
               if (context.mounted) {
                 if (response['status']) {

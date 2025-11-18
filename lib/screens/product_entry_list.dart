@@ -23,9 +23,9 @@ class _ProductListPageState extends State<ProductListPage> {
 
   Future<List<ProductEntry>> fetchProducts(CookieRequest request) async {
     // Ganti URL sesuai environment (Emulator: 10.0.2.2, Web: localhost)
-    String url = 'http://localhost:8000/json/';
+    String url = 'http://matthew-nathanael-spsportswear.pbp.cs.ui.ac.id/json/';
     if (widget.filterType == "my") {
-      url = 'http://localhost:8000/json/?filter=my';
+      url = 'http://matthew-nathanael-spsportswear.pbp.cs.ui.ac.id/json/?filter=my';
     }
 
     final response = await request.get(url);

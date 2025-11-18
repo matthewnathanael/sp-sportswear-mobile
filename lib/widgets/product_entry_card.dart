@@ -129,7 +129,7 @@ class ProductEntryCard extends StatelessWidget {
                 ],
               ),
 
-              // --- Bagian Konten Teks ---
+              //  Bagian Konten Teks
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(

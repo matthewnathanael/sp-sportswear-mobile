@@ -1,6 +1,10 @@
+// File: lib/widgets/left_drawer.dart
+
 import 'package:flutter/material.dart';
-import 'package:sp_sportswear_mobile/screen/menu.dart';
-import 'package:sp_sportswear_mobile/screen/product_form.dart'; // Import halaman form baru
+import 'package:sp_sportswear_mobile/screens/menu.dart';
+import 'package:sp_sportswear_mobile/screens/product_form.dart';
+// BARU: Import halaman daftar produk
+import 'package:sp_sportswear_mobile/screens/product_entry_list.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -12,12 +16,12 @@ class LeftDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Colors.blue, // Anda bisa ganti warnanya jika mau
             ),
             child: Column(
               children: [
                 Text(
-                  'SP Sportswear', // Judul diubah
+                  'SP Sportswear', // Judul
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 30,
@@ -27,7 +31,7 @@ class LeftDrawer extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(10)),
                 Text(
-                  "Toko sportswear terlengkap!", // Deskripsi diubah
+                  "Toko sportswear terlengkap!", // Deskripsi
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
@@ -40,7 +44,7 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.home_outlined),
-            title: const Text('Halaman Utama'), // Teks diubah
+            title: const Text('Halaman Utama'), //
             // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
@@ -51,8 +55,21 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add_shopping_cart), // Ikon diubah
-            title: const Text('Tambah Produk'), // Teks diubah
+            leading: const Icon(Icons.view_list),
+            title: const Text('Daftar Produk'),
+            onTap: () {
+              // Route ke halaman daftar produk
+              Navigator.pushReplacement( // Diganti menjadi pushReplacement
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductListPage(filterType: "all"),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_shopping_cart), // Ikon
+            title: const Text('Tambah Produk'), // Teks
             // Bagian redirection ke ProductFormPage
             onTap: () {
               Navigator.push(
